@@ -1,4 +1,4 @@
-use std::io;
+use std::{io, mem};
 
 pub fn main() {
     let mut buf = String::new();
@@ -16,9 +16,7 @@ pub fn main() {
     let mut alpha: u64 = numbers_iter.next().unwrap();
     let mut beta: u64 = numbers_iter.next().unwrap();
     if alpha < beta {
-        let tmp = beta;
-        beta = alpha;
-        alpha = tmp;
+        mem::swap(&mut alpha, &mut beta);
     }
     for n in numbers_iter {
         if n > alpha {
