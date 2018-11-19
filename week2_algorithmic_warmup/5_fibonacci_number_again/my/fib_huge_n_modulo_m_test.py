@@ -5,7 +5,7 @@ import sys
 from subprocess import PIPE, Popen, check_output
 
 print(check_output(["rustc", "-O", "fib_huge_n_modulo_m.rs"]))
-cmd_py = ["python", "../starters/week2_algorithmic_warmup/5_fibonacci_number_again/fibonacci_huge.py"]
+cmd_py = ["python", "../fibonacci_huge.py"]
 cmd_rs = ["./fib_huge_n_modulo_m"]
 
 
