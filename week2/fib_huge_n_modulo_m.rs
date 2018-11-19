@@ -9,7 +9,7 @@ pub fn fib_huge_n_modulo_m(n: u64, m: u64) -> u64 {
     let mut period: u64 = 1;
     let mut found_period: bool = false;
 
-    for i in 0..(n*1000) {
+    for i in 0..n {
         let f2 = f0 + f1 % big_m;
         f0 = replace(&mut f1, f2);
 
