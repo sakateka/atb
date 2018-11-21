@@ -1,11 +1,12 @@
 #!/usr/bin/python3
 
 import random
+import sys
 from subprocess import PIPE, Popen, check_output
 
-print(check_output(["rustc", "-O", "last_digit_of_fib_sum.rs"]))
+print(check_output(["rustc", "-O", sys.argv[1]+".rs"]))
 cmd_py = ["python", "../fibonacci_sum_last_digit.py"]
-cmd_rs = ["./last_digit_of_fib_sum"]
+cmd_rs = ["./"+sys.argv[1]]
 
 
 def test(n):
