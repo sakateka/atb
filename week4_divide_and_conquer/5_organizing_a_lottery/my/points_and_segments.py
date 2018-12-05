@@ -3,8 +3,9 @@ import os
 import sys
 from collections import defaultdict, namedtuple
 from functools import cmp_to_key
+from itertools import chain
 
-Dot = namedtuple('Dot', 'dot type')
+Dot = namedtuple('Dot', ['dot', 'type'])
 
 
 def fast_count_segments(starts, ends, points):
@@ -16,17 +17,11 @@ def fast_count_segments(starts, ends, points):
     end = 'r'
     point = 'p'
 
-    dots = [(0, 0)] * (len(points) + len(starts) * 2)
-    i = 0
-    for s in starts:
-        dots[i] = Dot(s, start)
-        i += 1
-    for e in ends:
-        dots[i] = Dot(e, end)
-        i += 1
-    for p in points:
-        dots[i] = Dot(p, point)
-        i += 1
+    dots = [d for d in chain(
+        [Dot(i, start) for i in starts],
+        [Dot(i, end) for i in ends],
+        [Dot(i, point) for i in points],
+    )]
 
     dots.sort(key=cmp_to_key(lambda a, b: a.dot - b.dot or ord(a.type) - ord(b.type)))
     n = 0
