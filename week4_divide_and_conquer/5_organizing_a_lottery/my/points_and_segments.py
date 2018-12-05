@@ -69,15 +69,14 @@ def stress_test():
                 [[0, 1, 2, 3], [3, 3, 3, 3], [0, 1, 2, 3]],
         ]
         while True:
-            starts = [random.randint(left, right) for _ in range(random.randint(0, max_len)+1)]
-            ends = [starts[i]+abs(random.randint(left+abs(starts[i]) + 1, right)) for i in range(len(starts))]
-            points = [random.randint(left, right) for _ in range(random.randint(0, max_len)+1)]
             show_result = False
             try:
                 (starts, ends, points) = cases.pop(0)
                 show_result = True
             except IndexError:
-                pass
+                starts = [random.randint(left, right) for _ in range(random.randint(0, max_len)+1)]
+                ends = [starts[i]+abs(random.randint(left+abs(starts[i]) + 1, right)) for i in range(len(starts))]
+                points = [random.randint(left, right) for _ in range(random.randint(0, max_len)+1)]
             assert len(starts) == len(ends)
 
             start = time.time()
