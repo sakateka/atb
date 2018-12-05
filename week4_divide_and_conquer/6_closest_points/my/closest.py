@@ -40,7 +40,7 @@ def minimum_distance_int(points):
             break
 
     right_idx = center_idx + 1
-    while center - points[right_idx][0] < right_min:
+    while points[right_idx][0] - center < right_min:
         right_idx += 1
         if right_idx == points_len:
             break
@@ -57,8 +57,7 @@ def minimum_distance(x, y):
 def stress_test():
     if os.environ.get("__STRESS_BINARY_SEARCH"):
         import time
-        from random import randint, seed
-        seed(0)
+        from numpy.random import randint
         cases = [
             [[4, -2, -3, -1, 2, -4, 1, -1, 3, -4, -2],  [4, -2, -4, 3, 3, 0, 1, -1, -1, 2, 4], 1.414213],
             [[0, 3], [0, 4], 5.0],
@@ -69,16 +68,22 @@ def stress_test():
         ]
         cmin = -10**9
         cmax = 10**9
+        i = 0
         while True:
+            i += 1
             try:
                 x, y, expect = cases.pop(0)
             except IndexError:
                 expect = None
-                n = randint(2, 2**11)
-                x = list(set(randint(cmin, cmax) for _ in range(n)))
-                y = [randint(cmin, cmax) for _ in range(len(x))]
+                n = randint(2, 10**5)
+                if i % 2 == 0:
+                    n = n % 2**12
+                x = list(set(randint(cmin, cmax, n)))
+                y = list(randint(cmin, cmax, len(x)))
+            print("problem_size={}".format(len(x)), end=' ')
             start = time.time()
-            answer = naive_minimum_distance(x, y)
+            if len(x) <= 2**12:
+                answer = naive_minimum_distance(x, y)
             n_time = time.time() - start
             if expect is None:
                 start = time.time()
@@ -86,6 +91,9 @@ def stress_test():
                 f_time = time.time() - start
                 print("naive_time={:0.3f} fast_time={:0.3f}".format(
                     n_time, f_time), end=' ')
+                if len(x) > 2**12:
+                    print("")
+                    continue
 
             try:
                 assert abs(expect - answer) < 0.001, (expect, answer)
