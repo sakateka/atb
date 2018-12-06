@@ -96,7 +96,33 @@ def stress_test():
                 raise
 
 
+def stress_test_rs():
+    if os.environ.get("__STRESS_TEST_RS"):
+        import time
+        from subprocess import Popen, PIPE, check_output
+        print(check_output(["rustc", "-O", "sorting.rs"]))
+        while True:
+            seq1 = [random.randint(1, 10**9) for x in range(random.randint(1, 2**17))]
+            seq1 += [random.randint(1, 10**9)] * random.randint(1, 2**17)
+            data = '{} {}\n'.format(len(seq1), " ".join(map(str, seq1))).encode('utf8')
+
+            seq3 = seq1.copy()
+            right = len(seq1) - 1
+            start = time.time()
+            randomized_quick_sort_partition3(seq3, 0, right)
+            print("sort part3 time={:0.3f}".format((time.time() - start)))
+
+            start = time.time()
+            cmd = Popen(["./sorting"], stdout=PIPE, stdin=PIPE, stderr=PIPE)
+            out_rs = cmd.communicate(input=data)[0].decode('utf8').strip()
+            print("sort rs time={:0.3f}".format((time.time() - start)))
+
+            out_py = " ".join(map(str, seq3))
+            assert out_py == out_rs, "\npy: {}\n\nrs: {}".format(out_py, out_rs)
+
+
 if __name__ == '__main__':
+    stress_test_rs()
     stress_test()
     input = sys.stdin.read()
     n, *a = list(map(int, input.split()))
