@@ -45,7 +45,9 @@ def get_majority_element_liner_space_big_o_1(a):
 
     count = 0
     for num in a:
-        count += 1 if candidate == num else 0
+        if candidate == num:
+            count += 1
+
     if count > len(a)//2:
         return candidate
 
