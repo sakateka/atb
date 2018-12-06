@@ -19,7 +19,7 @@ fn partition3(a: &mut [u32], left: usize, right: usize) -> (usize, usize) {
     (j_left, j_right)
 }
 
-fn randomized_quick_sort(a: &mut [u32], left: usize, right: usize) {
+fn quick_sort(a: &mut [u32], left: usize, right: usize) {
     if left >= right {
         return
     }
@@ -28,9 +28,9 @@ fn randomized_quick_sort(a: &mut [u32], left: usize, right: usize) {
 
     let (lm, rm) = partition3(a, left, right);
     if lm > 0 {
-        randomized_quick_sort(a, left, lm - 1);
+        quick_sort(a, left, lm - 1);
     }
-    randomized_quick_sort(a, rm + 1, right);
+    quick_sort(a, rm + 1, right);
 }
 
 pub fn main() {
@@ -40,7 +40,7 @@ pub fn main() {
         .map(|x| x.parse().unwrap()).collect();
 
     let n = numbers[0] as usize;
-    randomized_quick_sort(&mut numbers[1..], 0, n - 1);
+    quick_sort(&mut numbers[1..], 0, n - 1);
     for i in numbers[1..].iter() {
         print!("{} ", i);
     }
