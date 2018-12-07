@@ -74,9 +74,12 @@ def stress_test():
                 (starts, ends, points) = cases.pop(0)
                 show_result = True
             except IndexError:
-                starts = [random.randint(left, right) for _ in range(random.randint(0, max_len)+1)]
-                ends = [starts[i]+abs(random.randint(left+abs(starts[i]) + 1, right)) for i in range(len(starts))]
-                points = [random.randint(left, right) for _ in range(random.randint(0, max_len)+1)]
+                starts = [random.randint(left, right)
+                          for _ in range(random.randint(0, max_len)+1)]
+                ends = [starts[i]+abs(random.randint(left+abs(starts[i]) + 1, right))
+                        for i in range(len(starts))]
+                points = [random.randint(left, right)
+                          for _ in range(random.randint(0, max_len)+1)]
             assert len(starts) == len(ends)
 
             start = time.time()
