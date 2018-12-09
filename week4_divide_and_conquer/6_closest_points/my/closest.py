@@ -9,13 +9,10 @@ def naive_minimum_distance(x, y):
     return naive_minimum_distance_int(points)
 
 
-def naive_minimum_distance_int(points, limit=None):
+def naive_minimum_distance_int(points):
     min_distance = 10 ** 18
     for (i, p1) in enumerate(points):
-        if limit:
-            sub_list = points[i+1: min(len(points), i + limit)]
-        else:
-            sub_list = points[i+1:]
+        sub_list = points[i+1:]
         for p2 in sub_list:
             distance = math.sqrt((p1[0] - p2[0])**2 + (p1[1] - p2[1])**2)
             if distance < min_distance:
@@ -24,29 +21,38 @@ def naive_minimum_distance_int(points, limit=None):
 
 
 def minimum_distance_int(points):
-    if len(points) <= 3:
+    if len(points) <= 2:
         return naive_minimum_distance_int(points)
 
     points_len = len(points)
     center_idx = points_len//2
     left_min = minimum_distance_int(points[:center_idx])
     right_min = minimum_distance_int(points[center_idx:])
+    min_distance = min(left_min, right_min)
 
-    left_idx = center_idx - 1
+    left_idx = center_idx
     center = points[center_idx][0]
-    while center - points[left_idx][0] < left_min:
+    while center - points[left_idx][0] < min_distance:
         left_idx -= 1
         if left_idx == 0:
             break
 
-    right_idx = center_idx + 1
-    while points[right_idx][0] - center < right_min:
+    right_idx = center_idx
+    while points[right_idx][0] - center < min_distance:
         right_idx += 1
         if right_idx == points_len:
             break
+
     center_points = list(sorted(points[left_idx:right_idx], key=lambda x: x[1]))
-    center_min = naive_minimum_distance_int(center_points, limit=7)
-    return min(min(left_min, right_min), center_min)
+    right_idx = len(center_points)
+    left_idx = 0
+    while left_idx < right_idx:
+        center_min = naive_minimum_distance_int(center_points[left_idx:min(left_idx+7, right_idx)])
+        if center_min < min_distance:
+            min_distance = center_min
+        left_idx += 4
+
+    return min_distance
 
 
 def minimum_distance(x, y):
@@ -58,6 +64,9 @@ def stress_test():
     if os.environ.get("__STRESS_BINARY_SEARCH"):
         import time
         from numpy.random import randint
+        from subprocess import Popen, PIPE, check_output
+        print(check_output(["rustc", "-O", "closest.rs"]))
+
         cases = [
             [[4, -2, -3, -1, 2, -4, 1, -1, 3, -4, -2],  [4, -2, -4, 3, 3, 0, 1, -1, -1, 2, 4], 1.414213],
             [[0, 3], [0, 4], 5.0],
@@ -82,22 +91,29 @@ def stress_test():
                 y = list(randint(cmin, cmax, len(x)))
             print("problem_size={}".format(len(x)), end=' ')
             start = time.time()
+            atime = "naive_time"
             if len(x) <= 2**12:
                 answer = naive_minimum_distance(x, y)
+            else:
+                atime = "rust_time"
+                p = Popen(["./closest"], stdout=PIPE, stdin=PIPE, stderr=PIPE)
+                data = " ".join(map(lambda a: " ".join(map(str, a)), zip(x, y)))
+                data = str(len(x)) + " " + data
+                (out, err) = p.communicate(input=data.encode('utf8'))
+                answer = float(out.strip().decode('utf8'))
+
             n_time = time.time() - start
             if expect is None:
                 start = time.time()
                 expect, answer = answer, minimum_distance(x, y)
                 f_time = time.time() - start
-                print("naive_time={:0.3f} fast_time={:0.3f}".format(
-                    n_time, f_time), end=' ')
-                if len(x) > 2**12:
-                    print("")
-                    continue
+                print("{}={:0.3f} fast_time={:0.3f}".format(
+                    atime, n_time, f_time), end=' ')
 
             try:
                 assert abs(expect - answer) < 0.001, (expect, answer)
             except AssertionError:
+                print()
                 print(x)
                 print(y)
                 raise
