@@ -2,10 +2,9 @@ use std::io;
 
 pub fn change_dp(money: u32, coins: &[u32]) -> u32 {
     let money = money as usize;
-    let mut min_num_coins = Vec::with_capacity(money);
-    min_num_coins.push(0);  // min_num_coins[0] == 0;
+    let mut min_num_coins = vec![0;money+1];
     for m in 1..(money+1) {
-        min_num_coins.push(u32::max_value());
+        min_num_coins[m] = u32::max_value();
         for c in coins.iter() {
             let c = *c as usize;
             if m >= c {
