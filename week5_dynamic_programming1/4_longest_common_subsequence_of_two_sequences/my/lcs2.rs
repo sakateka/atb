@@ -14,8 +14,8 @@ fn lcs2(source: &[i32], target: &[i32]) -> usize {
 
     for s in 1..(s_len+1) {
         for t in 1..(t_len+1) {
-            let del = d[s - 1][t] + 1;
             let ins = d[s][t - 1] + 1;
+            let del = d[s - 1][t] + 1;
             let mis = d[s - 1][t - 1] + 1;
             let mth = d[s - 1][t - 1];
             if source[s - 1] == target[t - 1] {
@@ -25,7 +25,6 @@ fn lcs2(source: &[i32], target: &[i32]) -> usize {
             }
         }
     }
-
     count_lcs(d)
 }
 
@@ -34,20 +33,22 @@ fn count_lcs(d: Vec<Vec<usize>>) -> usize {
 
     let mut s = d.len() - 1;
     let mut t = d[0].len() - 1;
-    while s != 0 && t != 0 {
+    while s != 0 || t != 0 {
         if s > 0 && d[s][t] == d[s - 1][t] + 1 {
             s -= 1;
         } else if t > 0 && d[s][t] == d[s][t - 1] + 1 {
             t -= 1;
         } else {
-            if d[s][t] == d[s - 1][t - 1] {
+            if d[s - 1][t - 1] == d[s][t] {
                 lcs2_len += 1;
             }
             s -= 1;
             t -= 1;
         }
     }
-    lcs2_len
+
+    let or_lcs2 = lcs2_len;
+    usize::max(lcs2_len, or_lcs2)
 }
 
 pub fn main() {
@@ -86,4 +87,11 @@ fn lcs2_test() {
 
     let lcs = lcs2(&[1, 3, 4, 5], &[3, 4, 1, 5]);
     assert_eq!(3, lcs);
+
+    let lcs = lcs2(&[-1, -3, -1, -2], &[-1, -2, 0]);
+    assert_eq!(2, lcs);
+
+    let lcs = lcs2(&[-1, -2, 0, 9, 8, 7,], &[-1, -3, -1, -2]);
+    assert_eq!(2, lcs);
+
 }
