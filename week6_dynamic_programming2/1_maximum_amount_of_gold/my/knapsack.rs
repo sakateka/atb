@@ -1,6 +1,7 @@
 use std::io;
 
-fn knapsack(weights: &[usize], bars: &[usize]) -> usize {
+fn knapsack(big_w: usize, bars: &[usize]) -> usize {
+    let weights: Vec<usize> = (1..(big_w+1)).collect();
     let w_len = weights.len();
     let i_len = bars.len();
 
@@ -29,24 +30,21 @@ pub fn main() {
         .next()
         .unwrap();
 
-    let weights: Vec<usize> = (1..(big_w+1)).collect();
     let mut bars = String::new();
     io::stdin().read_line(&mut bars).unwrap();
     let bars: Vec<usize> = bars.split_whitespace()
         .map(|x| x.parse().unwrap())
         .collect();
 
-    let weight = knapsack(&weights[..], &bars[..]);
+    let weight = knapsack(big_w, &bars[..]);
     println!("{}", weight);
 }
 
 #[test]
 fn knapsack_test() {
-    let weights: Vec<usize> = (1..11).collect(); // W=10
-    let weight = knapsack(&weights[..], &[1, 4, 8]);
+    let weight = knapsack(10, &[1, 4, 8]);
     assert_eq!(9, weight);
 
-    let weights: Vec<usize> = (1..48).collect(); // W=47
-    let weight = knapsack(&weights[..], &[9, 14, 16, 30]);
+    let weight = knapsack(47, &[9, 14, 16, 30]);
     assert_eq!(46, weight);
 }
