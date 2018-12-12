@@ -9,17 +9,14 @@ fn eval(a: i64, op: char, b: i64) -> i64 {
     }
 }
 
-fn min_and_max(
-    i: usize, j: usize, mi: &Vec<Vec<i64>>, ma: &Vec<Vec<i64>>, ops: &Vec<char>
-) -> (i64, i64)
-{
+fn min_and_max(i: usize, j: usize, m: &Vec<Vec<i64>>, ops: &Vec<char>) -> (i64, i64) {
     let mut min = i64::max_value();
     let mut max = i64::min_value();
     for k in i..j {
-        let a = eval(ma[i][k], ops[k-1], ma[k+1][j]);
-        let b = eval(ma[i][k], ops[k-1], mi[k+1][j]);
-        let c = eval(mi[i][k], ops[k-1], ma[k+1][j]);
-        let d = eval(mi[i][k], ops[k-1], mi[k+1][j]);
+        let a = eval(m[k][i], ops[k-1], m[j][k+1]);
+        let b = eval(m[k][i], ops[k-1], m[k+1][j]);
+        let c = eval(m[i][k], ops[k-1], m[j][k+1]);
+        let d = eval(m[i][k], ops[k-1], m[k+1][j]);
         min = i64::min(min, i64::min(i64::min(a, b), i64::min(c, d)));
         max = i64::max(max, i64::max(i64::max(a, b), i64::max(c, d)));
     }
@@ -28,22 +25,20 @@ fn min_and_max(
 
 fn parentheses(d: Vec<i64>, ops: Vec<char>) -> i64 {
     let n = d.len();
-    let mut mi = vec![vec![0;n+1];n+1];
-    let mut ma = vec![vec![0;n+1];n+1];
+    let mut m = vec![vec![0;n+1];n+1];
     for i in 1..(n+1) {
-        mi[i][i] = d[i-1];
-        ma[i][i] = d[i-1];
+        m[i][i] = d[i-1];
     }
 
     for s in 1..n {
         for i in 1..(n-s + 1) {
             let j = i + s;
-            let (min, max) = min_and_max(i, j, &mut mi, &mut ma, &ops);
-            mi[i][j] = min;
-            ma[i][j] = max;
+            let (min, max) = min_and_max(i, j, &mut m, &ops);
+            m[i][j] = min;
+            m[j][i] = max;
         }
     }
-    return ma[1][n];
+    return m[n][1];
 }
 
 fn get_digits_and_ops(expression: &str) -> (Vec<i64>, Vec<char>) {
