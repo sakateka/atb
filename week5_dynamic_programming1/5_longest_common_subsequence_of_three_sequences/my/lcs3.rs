@@ -1,60 +1,27 @@
 use std::io;
 
-fn lcs_matrix(source: &[i32], target: &[i32]) -> Vec<Vec<usize>> {
-    let s_len = source.len();
-    let t_len = target.len();
-
-    let mut d: Vec<Vec<usize>> = vec![vec![0;t_len+1];s_len+1];
-    for s in 1..(s_len+1) {
-        for t in 1..(t_len+1) {
-            let ins = d[s][t - 1];
-            let del = d[s - 1][t];
-            let mis = d[s - 1][t - 1];
-            let mth = d[s - 1][t - 1] + 1;
-            if source[s - 1] == target[t - 1] {
-                d[s][t] = usize::max(mth, usize::max(ins, del));
-            } else {
-                d[s][t] = usize::max(mis, usize::max(ins, del));
-            }
-        }
-    }
-    d
-}
-
 fn lcs3(seq1: &[i32], seq2: &[i32], seq3: &[i32]) -> usize {
-    let lcs_1_2 = get_lcs(seq1, seq2);
-    let d = lcs_matrix(&lcs_1_2[..], seq3);
-    d[lcs_1_2.len()][seq3.len()]
-}
+    let l1 = seq1.len();
+    let l2 = seq2.len();
+    let l3 = seq3.len();
 
-fn get_lcs(source: &[i32], target: &[i32]) -> Vec<i32> {
-    let d = lcs_matrix(source, target);
-
-    let mut s = source.len();
-    let mut t = target.len();
-
-    let mut lcs = Vec::new();
-
-    while s != 0 && t != 0 {
-        if s > 0 && d[s][t] == d[s - 1][t] {
-            s -= 1;
-        } else if t > 0 && d[s][t] == d[s][t - 1] {
-            t -= 1;
-        } else {
-            let si = source[s-1];
-            let ti = target[t-1];
-            if si ==  ti {
-                lcs.push(si);
+    let mut d: Vec<Vec<Vec<usize>>> = vec![vec![vec![0;l3+1];l2+1];l1+1];
+    for s1 in 1..(l1+1) {
+        for s2 in 1..(l2+1) {
+            for s3 in 1..(l3+1) {
+                let c1 = d[s1 - 1][s2][s3];
+                let c2 = d[s1][s2 - 1][s3];
+                let c3 = d[s1][s2][s3 - 1];
+                if seq1[s1 - 1] == seq2[s2 - 1] && seq2[s2 - 1] == seq3[s3 - 1] {
+                    d[s1][s2][s3] = d[s1 - 1][s2 - 1][s3 - 1] + 1;
+                } else {
+                    d[s1][s2][s3] = usize::max(c1, usize::max(c2, c3));
+                }
             }
-            s -= 1;
-            t -= 1;
         }
     }
-    lcs.reverse();
-    println!("{:?}", lcs);
-    lcs
+    d[l1][l2][l3]
 }
-
 
 pub fn main() {
     let mut buf = String::new();
