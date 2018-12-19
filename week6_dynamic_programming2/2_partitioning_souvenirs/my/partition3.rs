@@ -6,26 +6,20 @@ fn partition3(bars: &[usize]) -> usize {
         return 0;
     }
     let big_w = sum / 3;
-    println!("big_w={}", big_w);
 
-    let weights: Vec<usize> = (1..(big_w+1)).collect();
-    let w_len = weights.len();
     let i_len = bars.len();
 
-    let mut d: Vec<Vec<usize>> = vec![vec![0;w_len+1];i_len+1];
-    for w in 1..(w_len+1) {
+    let mut d: Vec<Vec<usize>> = vec![vec![0;big_w+1];i_len+1];
+    for w in 1..(big_w+1) {
         for i in 1..(i_len+1) {
             d[i][w] = d[i - 1][w];
             let bar_w = bars[i - 1];
-            if bar_w <= w {
-                let val = d[i - 1][w - bar_w] + bar_w;
-                if d[i][w] < val {
-                    d[i][w] = val;
-                }
+            if bar_w == w || (bar_w < w && d[i - 1][w - bar_w] > 0) {
+                d[i][w] = if d[i-1][w] == 0 {1} else {2};
             }
         }
     }
-    d[i_len][w_len]
+    if d[i_len][big_w] == 2 {1} else {0}
 }
 
 pub fn main() {
@@ -46,8 +40,8 @@ pub fn main() {
 fn knapsack_test() {
     assert_eq!(0, partition3(&[40]));
     assert_eq!(0, partition3(&[3, 3, 3, 3]));
+    assert_eq!(0, partition3(&[1, 1, 2, 2, 2, 2, 3, 3]));
     assert_eq!(1, partition3(&[1, 1, 2, 2, 3, 3]));
-    assert_eq!(1, partition3(&[1, 1, 2, 2, 2, 2, 3, 3]));
     assert_eq!(1, partition3(&[7, 5, 2, 3, 3, 1]));
     assert_eq!(1, partition3(&[3, 3, 3]));
     assert_eq!(1, partition3(&[17, 59, 34, 57, 17, 23, 67, 1, 18, 2, 59]));
