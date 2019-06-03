@@ -1,13 +1,11 @@
 use std::io;
 
 fn knapsack(big_w: usize, bars: &[usize]) -> usize {
-    let weights: Vec<usize> = (1..(big_w+1)).collect();
-    let w_len = weights.len();
     let i_len = bars.len();
 
-    let mut d: Vec<Vec<usize>> = vec![vec![0;i_len+1];w_len+1];
+    let mut d: Vec<Vec<usize>> = vec![vec![0;i_len+1];big_w+1];
     for i in 1..(i_len+1) {
-        for w in 1..(w_len+1) {
+        for w in 1..(big_w+1) {
             d[w][i] = d[w][i - 1];
             let bar_w = bars[i - 1];
             if bar_w <= w {
@@ -18,7 +16,7 @@ fn knapsack(big_w: usize, bars: &[usize]) -> usize {
             }
         }
     }
-    d[w_len][i_len]
+    d[big_w][i_len]
 }
 
 pub fn main() {
