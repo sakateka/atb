@@ -22,7 +22,7 @@ struct Tree(Vec<Node>);
 
 impl Tree {
     fn new(cap: usize) -> Self {
-        Self(Vec::with_capacity(cap))
+        Tree(Vec::with_capacity(cap))
     }
     fn push(&mut self, n: Node) {
         self.0.push(n);
@@ -60,7 +60,7 @@ impl Tree {
 }
 
 
-fn main() {
+fn run() {
     let mut buf = String::new();
     io::stdin().read_line(&mut buf).unwrap();
     let size = buf[..buf.len()-1].parse::<usize>().unwrap();
@@ -81,4 +81,18 @@ fn main() {
     println!();
     tree.post_order_traversal(0);
     println!();
+}
+
+use std::thread;
+const STACK_SIZE: usize = 16 * 1024 * 1024;
+
+fn main() {
+    // Spawn thread with explicit stack size
+    let child = thread::Builder::new()
+        .stack_size(STACK_SIZE)
+        .spawn(run)
+        .unwrap();
+
+    // Wait for thread to join
+    child.join().unwrap();
 }
