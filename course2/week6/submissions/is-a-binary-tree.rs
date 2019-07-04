@@ -62,7 +62,7 @@ impl Tree {
             || (node.right != -1
                 && (node.key > self.0[node.right as usize].key
                     || (self.0[node.right as usize].left != -1
-                        && node.key >= self.0[self.0[node.right as usize].left as usize].key)
+                        && node.key > self.0[self.0[node.right as usize].left as usize].key)
                     || !self.is_bst(node.right)))
         {
             return false;
