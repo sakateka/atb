@@ -1,10 +1,21 @@
 # Uses python3
 import sys
+from collections import namedtuple
+
+IndexItem = namedtuple('IndexItem', ['cost', 'idx'])
+
 
 def get_optimal_value(capacity, weights, values):
     value = 0.
-    # write your code here
-
+    index = [IndexItem(values[idx] / weights[idx], idx) for idx in range(len(values))]
+    index = sorted(index, key=lambda item: item.cost, reverse=True)
+    for i in index:
+        if capacity == 0:
+            return value
+        add_w = min(weights[i.idx], capacity)
+        value += add_w * (values[i.idx] / weights[i.idx])
+        weights[i.idx] -= add_w
+        capacity -= add_w
     return value
 
 
