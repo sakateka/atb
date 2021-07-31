@@ -1,0 +1,8 @@
+pub mod _1_fibonacci_number;
+pub mod _2_last_digit_of_fibonacci_number;
+pub mod _3_greatest_common_divisor;
+pub mod _4_least_common_multiple;
+pub mod _5_fibonacci_number_again;
+pub mod _6_last_digit_of_the_sum_of_fibonacci_numbers;
+pub mod _7_last_digit_of_the_sum_of_fibonacci_numbers_again;
+pub mod _8_last_digit_of_the_sum_of_squares_of_fibonacci_numbers;

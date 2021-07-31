@@ -1,5 +1,5 @@
 /// ```
-/// use algorithms::sort::insertion::sort;
+/// use algorithmic_toolbox::sort::insertion::sort;
 ///
 /// let sorted = vec![1, 2, 3, 4, 5];
 /// let mut v = vec![5, 4, 3, 2, 1];

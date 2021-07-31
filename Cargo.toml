@@ -1,5 +1,5 @@
 [package]
-name = "Algorithmic Toolbox"
+name = "algorithmic_toolbox"
 version = "0.0.1"
 authors = ["Sergey Kacheev <uo0@ya.ru>"]
 

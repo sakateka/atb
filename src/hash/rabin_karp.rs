@@ -4,14 +4,14 @@ const X: usize = 263;
 fn poly_hash(text: &[u8]) -> usize {
     let mut hash = 0;
     for c in text.iter().rev() {
-        hash = (hash*X + *c as usize) % PRIME
+        hash = (hash * X + *c as usize) % PRIME
     }
     hash
 }
 
 fn precompute_hashes(text: &[u8], pattern_len: usize) -> Vec<usize> {
     let text_len = text.len();
-    let mut result = vec![0;text_len - pattern_len + 1];
+    let mut result = vec![0; text_len - pattern_len + 1];
     let s = &text[(text_len - pattern_len)..text_len];
     result[text_len - pattern_len] = poly_hash(s);
     let mut y = 1_usize;
@@ -19,11 +19,11 @@ fn precompute_hashes(text: &[u8], pattern_len: usize) -> Vec<usize> {
         y = (y * X) % PRIME;
     }
     for i in (0..(text_len - pattern_len)).rev() {
-        let sub = y * (text[i+pattern_len] as usize) % PRIME;
+        let sub = y * (text[i + pattern_len] as usize) % PRIME;
         let add = text[i] as isize - sub as isize;
         // avoid (-2)%5 != 3%5 by x = ((a%p) + p)%p instead of just x = a%p.
         let add = (add + PRIME as isize) as usize % PRIME;
-        result[i] = (X * result[i+1] + add) % PRIME;
+        result[i] = (X * result[i + 1] + add) % PRIME;
     }
     return result;
 }
@@ -41,7 +41,7 @@ fn are_equal(s1: &[u8], s2: &[u8]) -> bool {
 }
 
 /// ```
-/// use algorithms::hash::rabin_karp::rabin_karp;
+/// use algorithmic_toolbox::hash::rabin_karp::rabin_karp;
 ///
 /// let text = "abcbabc";
 /// let pattern = "ab";
@@ -66,7 +66,7 @@ pub fn rabin_karp(text: &[u8], pattern: &[u8]) -> Vec<usize> {
         if p_hash != t_hashes[i] {
             continue;
         }
-        if are_equal(&text[i..(i+pattern.len())], pattern) {
+        if are_equal(&text[i..(i + pattern.len())], pattern) {
             result.push(i);
         }
     }
