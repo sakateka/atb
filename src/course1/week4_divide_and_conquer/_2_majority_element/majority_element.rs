@@ -103,134 +103,132 @@ pub fn main() {
     }
 }
 
-#[test]
-fn get_majority_naive_test() {
-    struct TestCase {
-        result: Option<u32>,
-        elements: Vec<u32>,
-    }
-    let manual_tests = vec![
-        TestCase {
-            result: Some(1),
-            elements: vec![1],
-        },
-        TestCase {
-            result: Some(2),
-            elements: vec![2, 2],
-        },
-        TestCase {
-            result: Some(3),
-            elements: vec![3, 3, 3],
-        },
-        TestCase {
-            result: None,
-            elements: vec![1, 2, 3],
-        },
-        TestCase {
-            result: None,
-            elements: vec![1, 2, 3, 4],
-        },
-        TestCase {
-            result: None,
-            elements: vec![1, 2, 3, 1],
-        },
-        TestCase {
-            result: Some(2),
-            elements: vec![1, 2, 2, 2],
-        },
-        TestCase {
-            result: Some(2),
-            elements: vec![2, 1, 2, 2],
-        },
-        TestCase {
-            result: Some(2),
-            elements: vec![2, 2, 1, 2],
-        },
-        TestCase {
-            result: Some(2),
-            elements: vec![2, 2, 2, 1],
-        },
-        TestCase {
-            result: Some(2),
-            elements: vec![2, 2, 2, 1, 1],
-        },
-        TestCase {
-            result: None,
-            elements: vec![2, 2, 2, 1, 1, 1],
-        },
-        TestCase {
-            result: Some(2),
-            elements: vec![1, 1, 2, 2, 2],
-        },
-        TestCase {
-            result: Some(2),
-            elements: vec![2, 3, 9, 2, 2],
-        },
-        TestCase {
-            result: None,
-            elements: vec![1, 2, 3, 1],
-        },
-    ];
-    for c in manual_tests {
-        assert_eq!(
-            c.result,
-            get_majority_naive(&c.elements[..]),
-            "{:?}",
-            c.elements
-        );
-    }
-}
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use rand::random;
 
-#[test]
-fn get_majority_fast_test() {
-    use std::time::Instant;
-
-    fn random() -> u32 {
-        unsafe { rand() }
+    #[test]
+    fn get_majority_naive_test() {
+        struct TestCase {
+            result: Option<u32>,
+            elements: Vec<u32>,
+        }
+        let manual_tests = vec![
+            TestCase {
+                result: Some(1),
+                elements: vec![1],
+            },
+            TestCase {
+                result: Some(2),
+                elements: vec![2, 2],
+            },
+            TestCase {
+                result: Some(3),
+                elements: vec![3, 3, 3],
+            },
+            TestCase {
+                result: None,
+                elements: vec![1, 2, 3],
+            },
+            TestCase {
+                result: None,
+                elements: vec![1, 2, 3, 4],
+            },
+            TestCase {
+                result: None,
+                elements: vec![1, 2, 3, 1],
+            },
+            TestCase {
+                result: Some(2),
+                elements: vec![1, 2, 2, 2],
+            },
+            TestCase {
+                result: Some(2),
+                elements: vec![2, 1, 2, 2],
+            },
+            TestCase {
+                result: Some(2),
+                elements: vec![2, 2, 1, 2],
+            },
+            TestCase {
+                result: Some(2),
+                elements: vec![2, 2, 2, 1],
+            },
+            TestCase {
+                result: Some(2),
+                elements: vec![2, 2, 2, 1, 1],
+            },
+            TestCase {
+                result: None,
+                elements: vec![2, 2, 2, 1, 1, 1],
+            },
+            TestCase {
+                result: Some(2),
+                elements: vec![1, 1, 2, 2, 2],
+            },
+            TestCase {
+                result: Some(2),
+                elements: vec![2, 3, 9, 2, 2],
+            },
+            TestCase {
+                result: None,
+                elements: vec![1, 2, 3, 1],
+            },
+        ];
+        for c in manual_tests {
+            assert_eq!(
+                c.result,
+                get_majority_naive(&c.elements[..]),
+                "{:?}",
+                c.elements
+            );
+        }
     }
 
-    extern "C" {
-        fn rand() -> u32;
-    }
+    #[test]
+    fn get_majority_fast_test() {
+        use std::time::Instant;
 
-    let mut cases = vec![vec![2, 3, 9, 2, 2]];
+        let mut cases = vec![vec![2, 3, 9, 2, 2]];
 
-    for i in 0..5 {
-        let major = random();
-        let len = if i % 2 == 0 {
-            random() % (4 * (u32::pow(10, 4)))
-        } else {
-            random() % 10
-        } as usize;
+        for i in 0..5 {
+            let major = random();
+            let len: usize = if i % 2 == 0 {
+                random::<usize>() % (4 * (u32::pow(10, 4))) as usize
+            } else {
+                random::<usize>() % 10
+            } as usize;
 
-        let cases_len = cases.len();
-        let seq: Vec<u32> = if cases_len > 0 {
-            cases.remove(0)
-        } else {
-            (0..len * 2)
-                .map(|x| if x % 2 == 0 { major } else { random() })
-                .collect()
-        };
+            let cases_len = cases.len();
+            let seq: Vec<u32> = if cases_len > 0 {
+                cases.remove(0)
+            } else {
+                (0..len * 2)
+                    .map(|x| if x % 2 == 0 { major } else { random() })
+                    .collect()
+            };
 
-        let now = Instant::now();
-        let nm = get_majority_naive(&seq[..]);
-        let end = now.elapsed();
-        let naive_time = end.as_secs() as f64 + end.subsec_nanos() as f64 * 1e-9;
-        let now = Instant::now();
-        let fm = get_majority_fast(&seq[..]);
-        let end = now.elapsed();
-        let fast_time = end.as_secs() as f64 + end.subsec_nanos() as f64 * 1e-9;
-        let now = Instant::now();
-        let dm = get_majority_nlogn(&seq[..]);
-        let end = now.elapsed();
-        let nlogn_time = end.as_secs() as f64 + end.subsec_nanos() as f64 * 1e-9;
-        println!(
-            "len = {}, naive_time = {:0.3}, fast_time = {:0.6}, nlogn_time = {:0.6}",
-            seq.len(),
-            naive_time,
-            fast_time,
-            nlogn_time
-        );
-        assert!(nm == fm && fm == dm, "{:?}", (nm, fm, dm));
+            let now = Instant::now();
+            let nm = get_majority_naive(&seq[..]);
+            let end = now.elapsed();
+            let naive_time = end.as_secs() as f64 + end.subsec_nanos() as f64 * 1e-9;
+            let now = Instant::now();
+            let fm = get_majority_fast(&seq[..]);
+            let end = now.elapsed();
+            let fast_time = end.as_secs() as f64 + end.subsec_nanos() as f64 * 1e-9;
+            let now = Instant::now();
+            let dm = get_majority_nlogn(&seq[..]);
+            let end = now.elapsed();
+            let nlogn_time = end.as_secs() as f64 + end.subsec_nanos() as f64 * 1e-9;
+            println!(
+                "len = {}, naive_time = {:0.3}, fast_time = {:0.6}, nlogn_time = {:0.6}",
+                seq.len(),
+                naive_time,
+                fast_time,
+                nlogn_time
+            );
+            assert!(nm == fm && fm == dm, "{:?}", (nm, fm, dm));
+        }
     }
 }

@@ -2,7 +2,9 @@
 name = "algorithmic_toolbox"
 version = "0.0.1"
 authors = ["Sergey Kacheev <uo0@ya.ru>"]
+edition = "2018"
 
 [dependencies]
 num-bigint = "0.2.1"
 num-traits = "0.2.6"
+rand = "0.8.4"

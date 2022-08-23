@@ -1,1 +1,2 @@
 pub mod longest_substr_without_repeating_chars;
+pub mod median_of_two_sorted_arrays;
