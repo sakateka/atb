@@ -186,6 +186,7 @@ mod tests {
         }
     }
 
+    #[cfg(not(debug_assertions))]
     #[test]
     fn get_majority_fast_test() {
         use std::time::Instant;
