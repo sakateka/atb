@@ -8,3 +8,10 @@ edition = "2018"
 num-bigint = "0.2.1"
 num-traits = "0.2.6"
 rand = "0.8.4"
+
+[dev-dependencies]
+criterion = "0.3"
+
+[[bench]]
+name = "fib_bench"
+harness = false
