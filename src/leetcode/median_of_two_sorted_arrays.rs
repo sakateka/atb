@@ -95,6 +95,9 @@ pub fn find_median_sorted_arrays_fast(nums1: &Vec<i32>, nums2: &Vec<i32>) -> f64
     if a.len() > b.len() {
         mem::swap(&mut a, &mut b);
     }
+    if a.len() == 0 {
+        return median(b);
+    }
 
     let (mut l, mut r) = (0 as isize, a.len() as isize - 1);
     loop {
