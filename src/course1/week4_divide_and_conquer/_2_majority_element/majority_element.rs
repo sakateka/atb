@@ -106,7 +106,6 @@ pub fn main() {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use rand::random;
 
     #[test]
     fn get_majority_naive_test() {
@@ -189,6 +188,7 @@ mod tests {
     #[cfg(not(debug_assertions))]
     #[test]
     fn get_majority_fast_test() {
+        use rand::random;
         use std::time::Instant;
 
         let mut cases = vec![vec![2, 3, 9, 2, 2]];
