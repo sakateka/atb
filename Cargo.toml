@@ -5,9 +5,9 @@ authors = ["Sergey Kacheev <uo0@ya.ru>"]
 edition = "2021"
 
 [dependencies]
-num-bigint = "0.2.1"
-num-traits = "0.2.6"
-rand = "0.8.4"
+num-bigint = "0.4.3"
+num-traits = "0.2.15"
+rand = "0.8.5"
 
 [dev-dependencies]
 criterion = "0.3"
