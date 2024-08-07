@@ -5,12 +5,12 @@ authors = ["Sergey Kacheev <uo0@ya.ru>"]
 edition = "2021"
 
 [dependencies]
-num-bigint = "0.4.3"
-num-traits = "0.2.15"
+num-bigint = "0.4"
+num-traits = "^0.2"
 rand = "0.8.5"
 
 [dev-dependencies]
-criterion = "0.3"
+criterion = "^0.5"
 
 [[bench]]
 name = "fib_bench"
